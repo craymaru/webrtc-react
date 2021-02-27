@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import Button from "@material-ui/core/Button"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -41,8 +41,26 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }))
-const InputFormLocal = () => {
+const InputFormLocal = ({ localPeerName, setLocalPeerName }) => {
   const classes = useStyles()
+
+  const [name, setName] = useState("")
+  const [disabled, setDisabled] = useState(true)
+  const [isComposed, setIsComposed] = useState(false)
+
+  useEffect(() => {
+    setDisabled(!name)
+  }, [name])
+
+  const initializePeer = useCallback(
+    (event) => {
+      event.preventDefault()
+      setLocalPeerName(name)
+    },
+    [name, setLocalPeerName]
+  )
+
+  if (localPeerName) return <></>
 
   return (
     <Container component="main" maxWidth="xs">
@@ -61,8 +79,25 @@ const InputFormLocal = () => {
             label="Your name"
             name="username"
             autoFocus
+            onChange={(e) => setName(e.target.value)}
+            onCompositionStart={() => setIsComposed(false)}
+            onCompositionEnd={() => setIsComposed(true)}
+            onKeyDown={(e) => {
+              if (isComposed) return
+              if (e.target.value === "") return
+              if (e.key === "Enter") initializePeer(e)
+            }}
+            value={name}
           />
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            disabled={disabled}
+            onClick={initializePeer}
+          >
             Apply
           </Button>
         </form>

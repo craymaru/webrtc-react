@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import Button from "@material-ui/core/Button"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -42,8 +42,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const InputFormRemote = () => {
+const InputFormRemote = ({ localPeerName, remotePeerName, setRemotePeerName }) => {
   const classes = useStyles()
+
+  const [name, setName] = useState("")
+  const [disabled, setDisabled] = useState(true)
+  const [isComposed, setIsComposed] = useState(false)
+
+  useEffect(() => {
+    setDisabled(!name)
+  }, [name])
+
+  const initializePeer = useCallback(
+    (event) => {
+      event.preventDefault()
+      setRemotePeerName(name)
+    },
+    [name, setRemotePeerName]
+  )
+
+  if (!localPeerName) return <></>
+  if (remotePeerName) return <></>
 
   return (
     <Container component="main" maxWidth="xs">
@@ -62,8 +81,24 @@ const InputFormRemote = () => {
             label="Remote person name"
             name="username"
             autoFocus
+            onChange={(e) => setName(e.target.value)}
+            onCompositionStart={() => setIsComposed(false)}
+            onCompositionEnd={() => setIsComposed(true)}
+            onKeyDown={(e) => {
+              if (isComposed) return
+              if (e.target.value === "") return
+              if (e.key === "Enter") initializePeer(e)
+            }}
           />
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            disabled={disabled}
+            onClick={initializePeer}
+          >
             Apply
           </Button>
         </form>

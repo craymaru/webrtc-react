@@ -20,7 +20,11 @@ const App = () => {
   return (
     <div>
       <InputFormLocal localPeerName={localPeerName} setLocalPeerName={setLocalPeerName} />
-      <InputFormRemote remotePeerName={remotePeerName} setLocalPeerName={setRemotePeerName} />
+      <InputFormRemote
+        localPeerName={localPeerName}
+        remotePeerName={remotePeerName}
+        setRemotePeerName={setRemotePeerName}
+      />
     </div>
   )
 }

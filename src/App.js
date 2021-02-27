@@ -1,7 +1,18 @@
-import React from 'react';
+import React from "react"
 
-function App() {
-  return <div>Hello, React!</div>;
+const getMedia = async () => {
+  const constraints = { audio: true, video: true }
+
+  try {
+    return await navigator.mediaDevices.getUserMedia(constraints)
+  } catch (err) {
+    console.err(err)
+  }
+}
+getMedia()
+
+const App = () => {
+  return <div>Hello, React!</div>
 }
 
-export default App;
+export default App

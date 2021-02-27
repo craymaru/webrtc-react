@@ -1,5 +1,6 @@
-import React from "react"
-import InputForm from "./components/InputForm"
+import React, { useState } from "react"
+import InputFormLocal from "./components/InputFormLocal"
+import InputFormRemote from "./components/InputFormRemote"
 
 const getMedia = async () => {
   const constraints = { audio: true, video: true }
@@ -13,9 +14,13 @@ const getMedia = async () => {
 getMedia()
 
 const App = () => {
+  const [localPeerName, setLocalPeerName] = useState("")
+  const [remotePeerName, setRemotePeerName] = useState("")
+
   return (
     <div>
-      <InputForm />
+      <InputFormLocal localPeerName={localPeerName} setLocalPeerName={setLocalPeerName} />
+      <InputFormRemote remotePeerName={remotePeerName} setLocalPeerName={setRemotePeerName} />
     </div>
   )
 }

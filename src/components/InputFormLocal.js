@@ -41,8 +41,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }))
-
-export const InputForm = () => {
+const InputFormLocal = () => {
   const classes = useStyles()
 
   return (
@@ -74,3 +73,5 @@ export const InputForm = () => {
     </Container>
   )
 }
+
+export default InputFormLocal

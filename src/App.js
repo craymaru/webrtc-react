@@ -1,22 +1,17 @@
-import React, { useState } from "react"
-import InputFormLocal from "./components/InputFormLocal"
-import InputFormRemote from "./components/InputFormRemote"
+import React from "react"
 import VideoArea from "./components/VideoArea"
+import useRtcClient from "./components/hooks/useRtcClient"
+
+import InputForms from "./components/InputForms"
 
 const App = () => {
-  const [localPeerName, setLocalPeerName] = useState("")
-  const [remotePeerName, setRemotePeerName] = useState("")
+  const rtcClient = useRtcClient()
 
   return (
-    <div>
-      <InputFormLocal localPeerName={localPeerName} setLocalPeerName={setLocalPeerName} />
-      <InputFormRemote
-        localPeerName={localPeerName}
-        remotePeerName={remotePeerName}
-        setRemotePeerName={setRemotePeerName}
-      />
-      <VideoArea localPeerName={localPeerName} remotePeerName={remotePeerName} />
-    </div>
+    <>
+      <InputForms rtcClient={rtcClient} />
+      <VideoArea rtcClient={rtcClient} />
+    </>
   )
 }
 

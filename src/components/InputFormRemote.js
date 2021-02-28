@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const InputFormRemote = ({ localPeerName, remotePeerName, setRemotePeerName }) => {
+const InputFormRemote = ({ rtcClient }) => {
   const classes = useStyles()
 
   const [name, setName] = useState("")
@@ -56,13 +56,14 @@ const InputFormRemote = ({ localPeerName, remotePeerName, setRemotePeerName }) =
   const initializePeer = useCallback(
     (event) => {
       event.preventDefault()
-      setRemotePeerName(name)
+      rtcClient.remotePeerName = name
+      rtcClient.setRtcClient(rtcClient)
     },
-    [name, setRemotePeerName]
+    [name, rtcClient]
   )
 
-  if (!localPeerName) return <></>
-  if (remotePeerName) return <></>
+  if (!rtcClient.localPeerName) return <></>
+  if (rtcClient.remotePeerName) return <></>
 
   return (
     <Container component="main" maxWidth="xs">

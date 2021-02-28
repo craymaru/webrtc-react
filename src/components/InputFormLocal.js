@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }))
-const InputFormLocal = ({ localPeerName, setLocalPeerName }) => {
+const InputFormLocal = ({ rtcClient }) => {
   const classes = useStyles()
 
   const [name, setName] = useState("")
@@ -55,12 +55,14 @@ const InputFormLocal = ({ localPeerName, setLocalPeerName }) => {
   const initializePeer = useCallback(
     (event) => {
       event.preventDefault()
-      setLocalPeerName(name)
+      rtcClient.setRtcClient(rtcClient)
+      rtcClient.PeerName = name
+      rtcClient.localPeerName = name
     },
-    [name, setLocalPeerName]
+    [name, rtcClient]
   )
 
-  if (localPeerName) return <></>
+  if (rtcClient.localPeerName) return <></>
 
   return (
     <Container component="main" maxWidth="xs">

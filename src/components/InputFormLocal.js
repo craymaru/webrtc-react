@@ -55,8 +55,7 @@ const InputFormLocal = ({ rtcClient }) => {
   const initializePeer = useCallback(
     (event) => {
       event.preventDefault()
-      rtcClient.setRtcClient()
-      rtcClient.localPeerName = name
+      rtcClient.startListening(name)
     },
     [name, rtcClient]
   )

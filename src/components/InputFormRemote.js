@@ -56,8 +56,7 @@ const InputFormRemote = ({ rtcClient }) => {
   const initializePeer = useCallback(
     (event) => {
       event.preventDefault()
-      rtcClient.setRtcClient()
-      rtcClient.remotePeerName = name
+      rtcClient.connect(name)
     },
     [name, rtcClient]
   )

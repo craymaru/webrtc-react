@@ -1,7 +1,7 @@
 import FirebaseSignallingClient from "./FirebaseSignallingClient"
 
-export default class BaseRtcClient {
-  constructor(setRtcClient) {
+export default class RtcClient {
+  constructor(remoteVideoRef, setRtcClient) {
     const config = {
       iceServers: [{ urls: "stun:stun.stunprotocol.org" }],
     }
@@ -9,6 +9,7 @@ export default class BaseRtcClient {
     this.firebaseSignallingClient = new FirebaseSignallingClient()
     this.localPeerName = ""
     this.remotePeerName = ""
+    this.remoteVideoRef = remoteVideoRef
     this._setRtcClient = setRtcClient
     this.mediaStream = null
   }
@@ -30,6 +31,32 @@ export default class BaseRtcClient {
     await this.getUserMedia()
     this.addTracks()
     this.setRtcClient()
+  }
+
+  setOnTrack() {
+    this.rtcPeerConnection.ontrack = (rtcTrackEvent) => {
+      if (rtcTrackEvent.track.kind !== "video") return
+      const remoteMediaStream = tcTrackEvent.streams[0]
+      this.remoteVideoRef.current.srcObject = remoteMediaStream
+      this.setRtcClient()
+    }
+    this.setRtcClient()
+  }
+
+  connect(remotePeerName) {
+    this.remotePeerName = remotePeerName
+    this.setOnIceCandidateCallback()
+    this.setOnTrack()
+    this.setRtcClient()
+  }
+
+  setOnIceCandidateCallback() {
+    this.rtcPeerConnection.onicecandidate = ({ candidate }) => {
+      if (candidate) {
+        // TODO: remoteへCandidateを通知する
+      } else {
+      }
+    }
   }
 
   startListening(localPeerName) {

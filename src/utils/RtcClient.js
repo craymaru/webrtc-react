@@ -77,7 +77,7 @@ export default class RtcClient {
       this.setOnTrack()
       await this.setRemoteDescription(sessionDescription)
       const answer = await this.rtcPeerConnection.createAnswer()
-      this.rtcPeerConnection.setLocalDescription(answer)
+      await this.rtcPeerConnection.setLocalDescription(answer)
       await this.sendAnswer()
     } catch (error) {
       console.error(error)
@@ -116,7 +116,7 @@ export default class RtcClient {
   setOnIceCandidateCallback() {
     this.rtcPeerConnection.onicecandidate = ({ candidate }) => {
       if (candidate) {
-        // TODO: remoteへCandidateを通知する
+        console.log({ candidate })
       } else {
       }
     }

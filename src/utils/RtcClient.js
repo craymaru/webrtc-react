@@ -63,7 +63,7 @@ export default class RtcClient {
   setOnTrack() {
     this.rtcPeerConnection.ontrack = (rtcTrackEvent) => {
       if (rtcTrackEvent.track.kind !== "video") return
-      const remoteMediaStream = tcTrackEvent.streams[0]
+      const remoteMediaStream = rtcTrackEvent.streams[0]
       this.remoteVideoRef.current.srcObject = remoteMediaStream
       this.setRtcClient()
     }
@@ -108,7 +108,7 @@ export default class RtcClient {
     this.rtcPeerConnection.addTrack(this.audioTrack, this.mediaStream)
   }
   addVideoTrack() {
-    this.rtcPeerConnection.addTrack(this.VideoTrack, this.mediaStream)
+    this.rtcPeerConnection.addTrack(this.videoTrack, this.mediaStream)
   }
 
   get audioTrack() {

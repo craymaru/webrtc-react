@@ -11,31 +11,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Video = ({ userName, isLocal }) => {
+const Video = ({ rtcClient, isLocal }) => {
   const classes = useStyles()
 
   const videoRef = useRef(null)
   const currentVideoRef = videoRef.current
+  const mediaStream = rtcClient.mediaStream
 
   useEffect(() => {
     if (currentVideoRef === null) return
-    const getMedia = async () => {
-      const constraints = { audio: true, video: true }
-
+    const getMedia = () => {
       try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
         currentVideoRef.srcObject = mediaStream
       } catch (err) {
         console.err(err)
       }
     }
     getMedia()
-  }, [currentVideoRef])
+  }, [currentVideoRef, mediaStream])
 
   return (
     <Paper className={classes.paper}>
       <video ref={videoRef} autoPlay muted={isLocal} width={400} height={200} />
-      <div>{userName}</div>
+      <div>{rtcClient.localPeerName}</div>
     </Paper>
   )
 }

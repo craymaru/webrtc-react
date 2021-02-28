@@ -20,10 +20,10 @@ const VideoArea = ({ rtcClient, forceRender }) => {
     <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <Video userName={rtcClient.localPeerName} isLocal={true} />
+          <Video rtcClient={rtcClient} isLocal={true} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Video userName={rtcClient.remotePeerName} isLocal={true} />
+          <Video rtcClient={rtcClient} isLocal={true} />
         </Grid>
       </Grid>
     </div>

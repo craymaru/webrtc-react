@@ -33,6 +33,33 @@ export default class RtcClient {
     this.setRtcClient()
   }
 
+  async offer() {
+    const sessionDescription = await this.createOffer()
+    await this.setLocalDescription(sessionDescription)
+    await this.sendOffer()
+  }
+
+  async createOffer() {
+    try {
+      return await this.rtcPeerConnection.createOffer()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  async setLocalDescription(sessionDescription) {
+    try {
+      await this.rtcPeerConnection.setLocalDescription(sessionDescription)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  async sendOffer() {
+    this.firebaseSignallingClient.setPeerNames(this.localPeerName, this.remotePeerName)
+    await this.firebaseSignallingClient.sendOffer(this.localDescription)
+  }
+
   setOnTrack() {
     this.rtcPeerConnection.ontrack = (rtcTrackEvent) => {
       if (rtcTrackEvent.track.kind !== "video") return
@@ -43,11 +70,16 @@ export default class RtcClient {
     this.setRtcClient()
   }
 
-  connect(remotePeerName) {
+  async connect(remotePeerName) {
     this.remotePeerName = remotePeerName
     this.setOnIceCandidateCallback()
     this.setOnTrack()
+    await this.offer()
     this.setRtcClient()
+  }
+
+  get localDescription() {
+    return this.rtcPeerConnection.localDescription.toJSON()
   }
 
   setOnIceCandidateCallback() {

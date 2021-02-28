@@ -34,7 +34,6 @@ const Video = ({ rtcClient, isLocal }) => {
     <Paper className={classes.paper}>
       <video ref={videoRef} autoPlay muted={isLocal} width={400} height={200} />
       <div>{rtcClient.localPeerName}</div>
-      <div>{rtcClient.remotePeerName}</div>
     </Paper>
   )
 }

@@ -70,12 +70,43 @@ export default class RtcClient {
     this.setRtcClient()
   }
 
+  async answer(sender, sessionDescription) {
+    try {
+      this.remotePeerName = sender
+      this.setOnIceCandidateCallback()
+      this.setOnTrack()
+      await this.setRemoteDescription(sessionDescription)
+      const answer = await this.rtcPeerConnection.createAnswer()
+      this.rtcPeerConnection.setLocalDescription(answer)
+      await this.sendAnswer()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   async connect(remotePeerName) {
     this.remotePeerName = remotePeerName
     this.setOnIceCandidateCallback()
     this.setOnTrack()
     await this.offer()
     this.setRtcClient()
+  }
+
+  async setRemoteDescription(sessionDescription) {
+    await this.rtcPeerConnection.setRemoteDescription(sessionDescription)
+  }
+
+  async sendAnswer() {
+    this.firebaseSignallingClient.setPeerNames(this.localPeerName, this.remotePeerName)
+    await this.firebaseSignallingClient.sendAnswer(this.localDescription)
+  }
+
+  async saveRecievedSessionDescription(sessionDescription) {
+    try {
+      await this.setRemoteDescription(sessionDescription)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   get localDescription() {
@@ -91,11 +122,24 @@ export default class RtcClient {
     }
   }
 
-  startListening(localPeerName) {
+  async startListening(localPeerName) {
     this.localPeerName = localPeerName
     this.setRtcClient()
-    this.firebaseSignallingClient.database.ref(localPeerName).on("value", (snapshot) => {
+    await this.firebaseSignallingClient.remove(localPeerName)
+    this.firebaseSignallingClient.database.ref(localPeerName).on("value", async (snapshot) => {
       const data = snapshot.val()
+      if (!data) return
+      const { sender, sessionDescription, type } = data
+      switch (type) {
+        case "offer":
+          await this.answer(sender, sessionDescription)
+          break
+        case "answer":
+          await this.saveRecievedSessionDescription(sessionDescription)
+          break
+        default:
+          break
+      }
     })
   }
 
